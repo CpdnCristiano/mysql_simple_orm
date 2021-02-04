@@ -1,0 +1,16 @@
+name: example
+description: A new Get Server application.
+version: 1.0.0
+
+environment:
+  sdk: ">=2.4.0 <3.0.0"
+
+dependencies:
+  get_server:
+    git: https://github.com/jonataslaw/get_server.git
+  simple_orm:
+    path: ../
+
+dev_dependencies:
+  test: 1.15.3
+  pedantic: 1.9.2
