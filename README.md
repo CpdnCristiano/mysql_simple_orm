@@ -11,8 +11,7 @@ dependencies:
 ```
 - Create your model class
 ```dart
-//The table Annotation indicates to be a table in mysql
-//NOTE: You can add a different class name to your table
+
 
 class User {
   int id;
