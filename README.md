@@ -6,7 +6,7 @@ This is an attempt to develop an ORM in dart, I haven't seen any yet ...
 
 ```yaml
 dependencies:
-    orm_mysql: 
+    mysql_simple_orm: 
         git: https://github.com/CpdnCristiano/mysql_simple_orm.git
 ```
 - Create your model class
