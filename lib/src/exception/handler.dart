@@ -1,6 +1,6 @@
 import 'package:mysql1/mysql1.dart';
 
-import '../../dart_mysql_orm.dart';
+import '../../mysql_simple_orm.dart';
 import 'impl/duplicate_entry.dart';
 import 'impl/unknown_column.dart';
 import 'impl/unknown_database.dart';

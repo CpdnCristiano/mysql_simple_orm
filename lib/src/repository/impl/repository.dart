@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
-import '../../../dart_mysql_orm.dart';
+import 'package:mysql_simple_orm/src/models/data_types/impl/boolean.dart';
+
+import '../../../mysql_simple_orm.dart';
 import '../../models/table.model.dart';
 import '../../mysql/connection.dart';
 import '../interface/repository_interface.dart';
@@ -10,12 +11,14 @@ part 'functions_repository.dart';
 
 // Example: UserRepository extends Repository<User, int>
 // Note: First parameter is the class model, and the second is the type of id
-abstract class Repository<T, S> implements RepositoryBase<T, S> {
+abstract class Repository<T> implements RepositoryBase<T, int> {
   MySqlConnection connection = MySQL.connection;
   T modelDecoder(Map<String, dynamic> json);
   Table get table;
   Repository() {
-    _createTable(table);
+    if (MySQL.to.autoCreateTable) {
+      _createTable(table);
+    }
   }
 
   @override
@@ -29,7 +32,7 @@ abstract class Repository<T, S> implements RepositoryBase<T, S> {
   }
 
   @override
-  Future<T> findOne(S id) async {
+  Future<T> findOne(int id) async {
     var data = await connection
         .query('SELECT * FROM ${table.name} WHERE ${table.idField} = ?', [id]);
     if (data.isNotEmpty) {
@@ -55,21 +58,22 @@ abstract class Repository<T, S> implements RepositoryBase<T, S> {
     fields.removeWhere((key, value) => value == null);
     String query = 'INSERT INTO `${table.name}`(${fields.keys.join(",")}) '
         'VALUES (${fields.values.join(",")});';
-    print(query);
     var data = await connection.query(query);
     return findOne(data.insertId as dynamic);
   }
 
   @override
-  Future<T> update(S id, T object) async {
-    Map<String, dynamic> map = sqlEncode(object);
+  Future<T> update(int id, T object) async {
+    Map<String, dynamic> map = sqlEncode(object, true);
     List<String> query = [];
     map.forEach((key, value) {
       query.add('$key = $value');
     });
     await MySQL.connection.query(
-        'UPDATE `${table.name}` SET ${query.join(',')} WHERE ${table.idField} = ?',
-        [id]);
+      'UPDATE `${table.name}` SET ${query.join(',')} WHERE ${table.idField} = ?',
+      [id],
+    );
+
     return findOne(map[table.idField]);
   }
 
@@ -92,12 +96,13 @@ abstract class Repository<T, S> implements RepositoryBase<T, S> {
   }
 
   @override
-  Future<void> deleteOne(S id) {
+  Future<void> deleteOne(int id) {
     return deleteAllWhere(table.idField, id);
   }
 
   T sqlDecode(Map<String, dynamic> fields) =>
       _sqlDecode<T>(fields, table, modelDecoder);
 
-  Map<String, dynamic> sqlEncode(T object) => _sqlEncode<T>(object, table);
+  Map<String, dynamic> sqlEncode(T object, [bool isUpdate = false]) =>
+      _sqlEncode<T>(object, table, isUpdate);
 }

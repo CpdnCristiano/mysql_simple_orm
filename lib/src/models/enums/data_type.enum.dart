@@ -1,4 +1,4 @@
-import '../blob.model.dart';
+/* import '../blob.model.dart';
 
 enum DataType { VARCHAR, INT, DECIMAL, FLOAT, DATETIME, BLOB, BOOLEAN }
 
@@ -21,7 +21,8 @@ extension DataTypeExt on DataType {
     } else if (this == DataType.BLOB) {
       return Blob;
     } else {
-      Object;
+      return Object;
     }
   }
 }
+ */

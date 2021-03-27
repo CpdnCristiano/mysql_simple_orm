@@ -1,28 +1,59 @@
 import 'package:example/data/models/user.model.dart';
-import 'package:simple_orm/dart_mysql_orm.dart';
+import 'package:mysql_simple_orm/mysql_simple_orm.dart';
 
-class UserRepository extends Repository<User, int> {
+class UserRepository extends Repository<User> {
   @override
   User modelDecoder(Map<String, dynamic> json) => User.fromJson(json);
 
   @override
-  Table get table => Table('users_bool1', [
-        Column(
-          'codigo',
-          DataType.INT,
-          jsonProperty: 'id',
-          autoIncrement: true,
-          primaryKey: true,
-        ),
-        Column('name', DataType.VARCHAR, length: 60),
-        Column('email', DataType.VARCHAR, length: 60, unique: true),
-        Column('age', DataType.INT),
-        Column(
-          'is_active',
-          DataType.BOOLEAN,
-          jsonProperty: 'isActive',
-          defaulfValue: true,
-          notNull: true,
-        ),
-      ]);
+  Table get table => Table(
+        'users',
+        [
+          Column(
+            'id',
+            DataInt(),
+            jsonProperty: 'id',
+            autoIncrement: true,
+            primaryKey: true,
+          ),
+          Column(
+            'name',
+            DataVarchar(length: 60),
+          ),
+          Column(
+            'email',
+            DataVarchar(length: 60),
+            unique: true,
+          ),
+          Column(
+            'age',
+            DataInt(defaulfValue: 0),
+          ),
+          Column(
+            'is_active',
+            DataBoolean(defaulfValue: true),
+            jsonProperty: 'isActive',
+            notNull: true,
+          ),
+          Column(
+            'created_at',
+            DataCreatedAt(),
+            jsonProperty: 'createdAt',
+            notNull: true,
+            immutable: true,
+          ),
+          Column(
+            'birth_date',
+            DataTimestamp(),
+            jsonProperty: 'birthDate',
+            notNull: true,
+          ),
+          Column(
+            'last_update',
+            DataLastUpdate(),
+            jsonProperty: 'lastUpdate',
+            notNull: true,
+          ),
+        ],
+      );
 }

@@ -59,6 +59,4 @@ class MySqlConnection {
     var connect = await mysql1.MySqlConnection.connect(c);
     return MySqlConnection(connect, log);
   }
-
-  Future<void> addFila(String to) async {}
 }

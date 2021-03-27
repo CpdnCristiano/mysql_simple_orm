@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:simple_orm/src/exception/impl/table_not_exists.dart';
-import 'package:simple_orm/src/models/enums/relationship.enum.dart';
-import 'package:simple_orm/src/utils/functions/get_colunm_primary.dart';
+import 'package:mysql_simple_orm/src/exception/impl/table_not_exists.dart';
+import 'package:mysql_simple_orm/src/models/enums/relationship.enum.dart';
+import 'package:mysql_simple_orm/src/utils/functions/get_colunm_primary.dart';
 
 import 'column.model.dart';
 
@@ -35,7 +35,6 @@ class Table {
     }
     query += columns.join(', \n');
     query += '\n) $after;';
-    print(query);
     return query;
   }
 

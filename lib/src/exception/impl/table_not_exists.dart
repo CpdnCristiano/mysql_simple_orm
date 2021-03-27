@@ -1,4 +1,4 @@
-import 'package:simple_orm/dart_mysql_orm.dart';
+import 'package:mysql_simple_orm/mysql_simple_orm.dart';
 
 class TableNotExists extends OrmException {
   final String _table;

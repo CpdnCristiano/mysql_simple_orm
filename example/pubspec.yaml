@@ -1,14 +1,14 @@
 name: example
 description: A new Get Server application.
 version: 1.0.0
+publish_to: none
 
 environment:
-  sdk: ">=2.4.0 <3.0.0"
+  sdk: '>=2.7.0 <3.0.0'
 
 dependencies:
-  get_server:
-    git: https://github.com/jonataslaw/get_server.git
-  simple_orm:
+  faker: ^1.3.0
+  mysql_simple_orm:
     path: ../
 
 dev_dependencies:
