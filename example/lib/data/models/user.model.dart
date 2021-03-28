@@ -1,3 +1,5 @@
+import '../type.enum.dart';
+
 class User {
   int id;
   String name;
@@ -7,7 +9,7 @@ class User {
   DateTime createdAt;
   DateTime birthDate;
   DateTime lastUpdate;
-
+  UserType userType;
   User({
     this.id,
     this.name,
@@ -17,6 +19,7 @@ class User {
     this.birthDate,
     this.createdAt,
     this.lastUpdate,
+    this.userType,
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -28,6 +31,7 @@ class User {
     createdAt = json['createdAt'];
     birthDate = json['birthDate'];
     lastUpdate = json['lastUpdate'];
+    userType = json['userType'];
   }
 
   Map<String, dynamic> toJson() {
@@ -40,6 +44,11 @@ class User {
     data['createdAt'] = createdAt;
     data['birthDate'] = birthDate;
     data['lastUpdate'] = lastUpdate;
+    data['userType'] = userType;
     return data;
+  }
+
+  void promoteToAdmin() {
+    userType = UserType.Admin;
   }
 }

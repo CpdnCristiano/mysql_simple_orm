@@ -4,6 +4,7 @@ import 'package:faker/faker.dart';
 
 import 'data/models/user.model.dart';
 import 'data/repositorys/user.repository.dart';
+import 'data/type.enum.dart';
 
 void main() async {
   MySQL db = MySQL(
@@ -14,50 +15,43 @@ void main() async {
     createDbIfNotExists: true,
   );
   await db.init();
-  var repository = UserRepository();
+  var repository = UserRepository(name: 'user_teste_string_enum');
 
-  /// wait to create table
+  // wait to create table
   await Future.delayed(Duration(seconds: 2));
 
+  // teste save
+  var birthDateGenerate = faker.date.dateTime(minYear: 1950, maxYear: 2000);
   var user = User(
     name: faker.person.name(),
     email: faker.internet.freeEmail(),
-    age: faker.randomGenerator.integer(70, min: 10),
-    birthDate: faker.date.dateTime(minYear: 1970, maxYear: 2010),
+    age: DateTime.now().year - birthDateGenerate.year,
+    birthDate: birthDateGenerate,
   );
+
   try {
     var saveUser = await repository.insert(user);
+    print(birthDateGenerate);
+
     print('\n ${saveUser.toJson()} \n');
   } on OrmException catch (e) {
-    print('\n failed to create user: ${e.message} \n');
+    print('\n failed to create user: \n${e.message} \n');
   }
 
+  //test find
   user = await repository.findOne(1);
-  user.age = faker.randomGenerator.integer(70, min: 10);
 
-  print('\n user before update ${user.toJson()} \n');
-  //user.birthDate = DateTime.now();
+  print('\n user before update: \n${user.toJson()} \n');
+  if (user.userType == UserType.normal) {
+    user.promoteToAdmin();
+  }
+
+  user.isActive = !user.isActive;
+
+  // test update
   user = await repository.update(user.id, user);
+
   print('\n user after update ${user.toJson()} \n');
 
   await db.close();
 }
-
-T build<T>(List<T> values, String value) {
-  if (values is T) {
-    for (var item in values) {
-      if (value == enumToString<T>(item)) {
-        return item;
-      }
-    }
-  }
-  return value as T;
-}
-
-String enumToString<T>(T value) {
-  return value.toString().split('.').last;
-}
-
-enum TypeEnum { VARCHAR, INT }
-
-class ConvertEnum<T> {}

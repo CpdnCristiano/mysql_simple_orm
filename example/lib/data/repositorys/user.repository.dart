@@ -1,13 +1,17 @@
 import 'package:example/data/models/user.model.dart';
 import 'package:mysql_simple_orm/mysql_simple_orm.dart';
 
+import '../models/user.model.dart';
+import '../type.enum.dart';
+
 class UserRepository extends Repository<User> {
+  String name;
   @override
   User modelDecoder(Map<String, dynamic> json) => User.fromJson(json);
 
   @override
   Table get table => Table(
-        'users',
+        name,
         [
           Column(
             'id',
@@ -44,7 +48,7 @@ class UserRepository extends Repository<User> {
           ),
           Column(
             'birth_date',
-            DataTimestamp(),
+            DataDateTime(),
             jsonProperty: 'birthDate',
             notNull: true,
           ),
@@ -54,6 +58,17 @@ class UserRepository extends Repository<User> {
             jsonProperty: 'lastUpdate',
             notNull: true,
           ),
+          Column(
+            'user_type',
+            DataEnumString(
+              UserType.values,
+              defaulfValue: UserType.normal,
+            ),
+            jsonProperty: 'userType',
+            notNull: true,
+          ),
         ],
       );
+
+  UserRepository({this.name = 'users'});
 }
