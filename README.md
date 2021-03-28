@@ -168,5 +168,3 @@ void main() async {
 observations: In the future, the ORM will have a relationship between the wait
 
 ###### Example projects
-
-[User registration API](https://github.com/CpdnCristiano/orm_mysql/tree/master/example)
