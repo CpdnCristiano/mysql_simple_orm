@@ -11,13 +11,11 @@ void _createTable(Table table) {
 
 void _replaceFielsToJson(Map<String, dynamic> fields, Table table) {
   table.columns.forEach((column) {
-    if (column.dataType is DataBoolean && fields[column.name] is int) {
-      fields[column.name] = fields[column.name] == 1;
-    }
+    _convertValueToDartType(fields, column);
     if (column.jsonProperty != null) {
       var value = fields[column.name];
       fields.remove(column.name);
-      fields[column.jsonProperty] = value;
+      fields[column.jsonProperty as String] = value;
     }
   });
 }
@@ -35,6 +33,7 @@ void _replaceJsonToFields(Map<String, dynamic> json, Table table) {
       json.remove(column.jsonProperty);
       json[column.name] = value;
     }
+    _convertValueToMyqlType(json, column);
   });
 }
 
@@ -48,9 +47,6 @@ Map<String, dynamic> _sqlEncode<T>(T object, Table table, isUpdate) {
   json.forEach((key, value) {
     if (value is String) {
       value = _preventInjection(value);
-      json[key] = "'$value'";
-    } else if (value is DateTime) {
-      value = (value as DateTime).toUtc().toString().split('.').first;
       json[key] = "'$value'";
     }
   });
@@ -73,4 +69,48 @@ Map<String, dynamic> _toJson(object) {
 
 String _preventInjection(String value) {
   return value.replaceAll("'", "\\'");
+}
+
+void _convertValueToMyqlType(Map<String, dynamic> fields, Column column) {
+  if (column.dataType is DataEnum) {
+    fields[column.name] =
+        (column.dataType as DataEnum).toValue(fields[column.name]);
+  } else if (column.dataType is DataTimestamp) {
+    if (fields[column.name] != null && fields[column.name] is DateTime) {
+      fields[column.name] =
+          (fields[column.name] as DateTime).toUtc().toString().split('.').first;
+    }
+  } else if (column.dataType is DataDateTime) {
+    if (fields[column.name] != null && fields[column.name] is DateTime) {
+      fields[column.name] =
+          (fields[column.name] as DateTime).toString().split('.').first;
+    }
+  }
+}
+
+void _convertValueToDartType(Map<String, dynamic> fields, Column column) {
+  if (column.dataType is DataBoolean && fields[column.name] is int) {
+    fields[column.name] = fields[column.name] == 1;
+  } else if (column.dataType is DataEnum) {
+    fields[column.name] =
+        (column.dataType as DataEnum).toEnum(fields[column.name]);
+  } else if (column.dataType is DataTimestamp) {
+    if (fields[column.name] != null && fields[column.name] is DateTime) {
+      fields[column.name] = (fields[column.name] as DateTime).toLocal();
+    }
+  } else if (column.dataType is DataDateTime) {
+    if (fields[column.name] != null && fields[column.name] is DateTime) {
+      var value = fields[column.name] as DateTime;
+      fields[column.name] = DateTime(
+        value.year,
+        value.month,
+        value.day,
+        value.hour,
+        value.minute,
+        value.second,
+        value.millisecond,
+        value.microsecond,
+      );
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:mysql_simple_orm/src/models/data_types/interface/data_type.dart';
+import 'package:mysql_simple_orm/src/data_types/interface/data_type.dart';
 
 import 'enums/relationship.enum.dart';
 
@@ -9,7 +9,7 @@ class Column {
   final bool primaryKey;
   final bool unique;
   final bool notNull;
-  final String jsonProperty;
+  final String? jsonProperty;
   final bool immutable;
 
   // String get field => jsonProperty ?? name;
@@ -32,7 +32,11 @@ class Column {
     if (notNull) str += ' NOT NULL';
     if (unique) str += ' UNIQUE';
     if (dataType.defaulfValue != null) {
-      str += ' DEFAULT ${dataType.defaulfValue}';
+      var defaulfValue = dataType.defaulfValue;
+      if (defaulfValue is String) {
+        defaulfValue = "'$defaulfValue'";
+      }
+      str += ' DEFAULT $defaulfValue';
     }
     if (primaryKey) str += ' PRIMARY KEY';
     if (autoIncrement) str += ' AUTO_INCREMENT';
@@ -43,16 +47,20 @@ class Column {
 class FkColumn extends Column {
   final Relationship relationship;
   final String foreignTable;
-  final String foreignColunm;
-  FkColumn(String name, DataType dataType, this.foreignTable, this.relationship,
-      {autoIncrement = false,
-      primaryKey = false,
-      notNull = false,
-      unique = false,
-      length = 0,
-      jsonProperty,
-      this.foreignColunm})
-      : super(name, dataType,
+  final String? foreignColunm;
+  FkColumn(
+    String name,
+    DataType dataType,
+    this.foreignTable,
+    this.relationship, {
+    autoIncrement = false,
+    primaryKey = false,
+    notNull = false,
+    unique = false,
+    length = 0,
+    jsonProperty,
+    this.foreignColunm,
+  }) : super(name, dataType,
             autoIncrement: autoIncrement,
             jsonProperty: jsonProperty,
             notNull: notNull,

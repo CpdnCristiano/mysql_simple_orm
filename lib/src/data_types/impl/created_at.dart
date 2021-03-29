@@ -1,4 +1,4 @@
-import 'package:mysql_simple_orm/src/models/data_types/impl/timestamp.dart';
+import 'package:mysql_simple_orm/src/data_types/impl/timestamp.dart';
 
 class DataCreatedAt extends DataTimestamp {
   DataCreatedAt();

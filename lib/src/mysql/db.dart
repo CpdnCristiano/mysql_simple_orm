@@ -1,19 +1,22 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:mysql1/mysql1.dart' as mysql1;
 
 import 'connection.dart';
 
 class MySQL {
-  static MySQL _instance;
+  static MySQL? _instance;
   static MySQL get to {
-    if (_instance != null) {
-      return _instance;
+    var instance = _instance;
+    if (instance != null) {
+      return instance;
     }
     throw Exception('database not started');
   }
 
   static MySqlConnection get connection {
-    if (to._connection != null) {
-      return to._connection;
+    var connection = to._connection;
+    if (connection != null) {
+      return connection;
     }
     throw Exception('database not started');
   }
@@ -33,14 +36,14 @@ class MySQL {
   final bool autoCreateTable;
   //final String onConnectRun;
 
-  MySqlConnection _connection;
+  MySqlConnection? _connection;
 
   MySQL({
     this.host = 'localhost',
     this.port = 3306,
-    this.user,
-    this.password,
-    this.db,
+    required this.user,
+    required this.password,
+    this.db = 'mydb',
     this.useCompression = false,
     this.useSSL = false,
     this.maxPacketSize = 16 * 1024 * 1024,
@@ -68,15 +71,15 @@ class MySQL {
 
       _connection = await MySqlConnection.connect(settings, false);
       if (createDbIfNotExists) {
-        await _connection.query('CREATE DATABASE IF NOT EXISTS $db;');
+        await _connection?.query('CREATE DATABASE IF NOT EXISTS $db;');
       }
-      await _connection.query('USE $db;');
-      _connection.useLog = useLog;
+      await _connection?.query('USE $db;');
+      _connection?.useLog = useLog;
       _instance = this;
     }
   }
 
   Future<void> close() async {
-    await _connection.close();
+    await _connection?.close();
   }
 }

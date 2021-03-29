@@ -1,6 +1,8 @@
 import 'dart:async';
 
-import 'package:mysql_simple_orm/src/models/data_types/impl/boolean.dart';
+import 'package:mysql_simple_orm/src/data_types/impl/boolean.dart';
+import 'package:mysql_simple_orm/src/data_types/impl/enum.dart';
+import 'package:mysql_simple_orm/src/data_types/types.dart';
 
 import '../../../mysql_simple_orm.dart';
 import '../../models/table.model.dart';
@@ -32,7 +34,7 @@ abstract class Repository<T> implements RepositoryBase<T, int> {
   }
 
   @override
-  Future<T> findOne(int id) async {
+  Future<T?> findOne(int id) async {
     var data = await connection
         .query('SELECT * FROM ${table.name} WHERE ${table.idField} = ?', [id]);
     if (data.isNotEmpty) {
@@ -53,7 +55,7 @@ abstract class Repository<T> implements RepositoryBase<T, int> {
   }
 
   @override
-  Future<T> insert(T object) async {
+  Future<T?> insert(T object) async {
     var fields = sqlEncode(object);
     fields.removeWhere((key, value) => value == null);
     String query = 'INSERT INTO `${table.name}`(${fields.keys.join(",")}) '
@@ -63,7 +65,7 @@ abstract class Repository<T> implements RepositoryBase<T, int> {
   }
 
   @override
-  Future<T> update(int id, T object) async {
+  Future<T?> update(int id, T object) async {
     Map<String, dynamic> map = sqlEncode(object, true);
     List<String> query = [];
     map.forEach((key, value) {
@@ -78,13 +80,14 @@ abstract class Repository<T> implements RepositoryBase<T, int> {
   }
 
   @override
-  Future<void> deleteAllWhere(String field, value) async {
-    return await connection
+  Future<bool> deleteAllWhere(String field, value) async {
+    var data = await connection
         .query('DELETE FROM `${table.name}` WHERE $field = ?', [value]);
+    return data.affectedRows > 0;
   }
 
   @override
-  Future<T> findOneByField(String field, value) async {
+  Future<T?> findOneByField(String field, value) async {
     var list = await findByField(field, value);
     if (list.length == 1) {
       return list.first;
@@ -96,7 +99,7 @@ abstract class Repository<T> implements RepositoryBase<T, int> {
   }
 
   @override
-  Future<void> deleteOne(int id) {
+  Future<bool> deleteOne(int id) {
     return deleteAllWhere(table.idField, id);
   }
 

@@ -1,5 +1,5 @@
 abstract class DataType<T> {
-  final T defaulfValue;
+  final T? defaulfValue;
 
   String get string;
 

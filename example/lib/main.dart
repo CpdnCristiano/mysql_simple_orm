@@ -19,27 +19,30 @@ void main() async {
 
   // wait to create table
   await Future.delayed(Duration(seconds: 2));
-
+  var a = Stopwatch()..start();
   // teste save
-  var birthDateGenerate = faker.date.dateTime(minYear: 1950, maxYear: 2000);
-  var user = User(
-    name: faker.person.name(),
-    email: faker.internet.freeEmail(),
-    age: DateTime.now().year - birthDateGenerate.year,
-    birthDate: birthDateGenerate,
-  );
+  for (var i = 0; i < 10000; i++) {
+    var birthDateGenerate = faker.date.dateTime(minYear: 1950, maxYear: 2000);
+    var user = User(
+      name: faker.person.name(),
+      email: faker.internet.freeEmail(),
+      age: DateTime.now().year - birthDateGenerate.year,
+      birthDate: birthDateGenerate,
+    );
 
-  try {
-    var saveUser = await repository.insert(user);
-    print(birthDateGenerate);
+    try {
+      var saveUser = await repository.insert(user);
 
-    print('\n ${saveUser.toJson()} \n');
-  } on OrmException catch (e) {
-    print('\n failed to create user: \n${e.message} \n');
+      print('\n ${saveUser.toJson()} \n');
+    } on OrmException catch (e) {
+      print('\n failed to create user: \n${e.message} \n');
+    }
   }
+  a.stop();
+  print('10000 em ${a.elapsed.inSeconds}');
 
   //test find
-  user = await repository.findOne(1);
+  var user = await repository.findOne(1);
 
   print('\n user before update: \n${user.toJson()} \n');
   if (user.userType == UserType.normal) {
@@ -54,4 +57,6 @@ void main() async {
   print('\n user after update ${user.toJson()} \n');
 
   await db.close();
+
+  print('10000 em ${a.elapsed.inSeconds}');
 }

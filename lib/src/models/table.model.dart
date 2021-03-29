@@ -19,7 +19,7 @@ class Table {
     var list = columns.join(',,').split(',,');
     for (var c in columns) {
       if (c is FkColumn) {
-        String id =
+        String? id =
             c.foreignColunm ?? await getPrimarykeyFromTable(c.foreignTable);
         if (id != null) {
           if (c.relationship != Relationship.OneToMany) {
