@@ -58,27 +58,28 @@ class MySQL {
   });
 
   Future<void> init() async {
-    if (_instance == null) {
-      mysql1.ConnectionSettings settings = mysql1.ConnectionSettings(
-        characterSet: characterSet,
-        host: host,
-        maxPacketSize: maxPacketSize,
-        password: password,
-        port: port,
-        timeout: timeout,
-        useCompression: useCompression,
-        useSSL: useSSL,
-        user: user,
-      );
-
-      _connection = await MySqlConnection.connect(settings, false);
-      if (createDbIfNotExists) {
-        await _connection?.query('CREATE DATABASE IF NOT EXISTS $db;');
-      }
-      await _connection?.query('USE $db;');
-      _connection?.useLog = useLog;
-      _instance = this;
+    if (_instance != null) {
+      await close();
     }
+    mysql1.ConnectionSettings settings = mysql1.ConnectionSettings(
+      characterSet: characterSet,
+      host: host,
+      maxPacketSize: maxPacketSize,
+      password: password,
+      port: port,
+      timeout: timeout,
+      useCompression: useCompression,
+      useSSL: useSSL,
+      user: user,
+    );
+
+    _connection = await MySqlConnection.connect(settings, false);
+    if (createDbIfNotExists) {
+      await _connection?.query('CREATE DATABASE IF NOT EXISTS $db;');
+    }
+    await _connection?.query('USE $db;');
+    _connection?.useLog = useLog;
+    _instance = this;
   }
 
   Future<void> close() async {
