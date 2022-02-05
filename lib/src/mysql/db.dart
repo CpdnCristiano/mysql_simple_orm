@@ -1,4 +1,6 @@
 // ignore: import_of_legacy_library_into_null_safe
+import 'dart:io';
+
 import 'package:mysql1/mysql1.dart' as mysql1;
 
 import 'connection.dart';
@@ -81,5 +83,17 @@ class MySQL {
 
   Future<void> close() async {
     await _connection?.close();
+  }
+
+  Future<void> changeDb(String db) async {
+    await _connection?.query('USE $db;');
+  }
+
+  Future<void> run(String sql) async {
+    await _connection?.query(sql);
+  }
+
+  Future<void> runFile(String path) async {
+    await _connection?.query(File(path).readAsStringSync());
   }
 }

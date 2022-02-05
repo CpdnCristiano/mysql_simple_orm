@@ -1,13 +1,9 @@
 import 'dart:async';
 
-import 'package:mysql_simple_orm/src/data_types/impl/boolean.dart';
 import 'package:mysql_simple_orm/src/data_types/impl/enum.dart';
-import 'package:mysql_simple_orm/src/data_types/types.dart';
 
 import '../../../mysql_simple_orm.dart';
-import '../../models/table.model.dart';
 import '../../mysql/connection.dart';
-import '../interface/repository_interface.dart';
 
 part 'functions_repository.dart';
 
