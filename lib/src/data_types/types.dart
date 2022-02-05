@@ -6,3 +6,4 @@ export 'impl/timestamp.dart';
 export 'impl/last_update.dart';
 export 'impl/enum_string.dart';
 export 'impl/datetime.dart';
+export 'impl/double.dart';

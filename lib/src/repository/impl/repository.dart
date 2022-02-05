@@ -83,7 +83,7 @@ abstract class Repository<T> implements RepositoryBase<T, int> {
   Future<bool> deleteAllWhere(String field, value) async {
     var data = await connection
         .query('DELETE FROM `${table.name}` WHERE $field = ?', [value]);
-    return data.affectedRows > 0;
+    return data.affectedRows != null && data.affectedRows! > 0;
   }
 
   @override
